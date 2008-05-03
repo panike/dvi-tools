@@ -950,7 +950,7 @@ int matches(const char*data,int len,const char*s)
 @**Boilerplate code for files. I expect that some of this code will be
 specific to the operating system, since we are dealing directly with
 files here.
-@ @<Global func...@>=
+@<Global func...@>=
 unsigned char* read_file(const char*,int*);
 @ @c
 unsigned char* read_file(const char*name,int*len){
