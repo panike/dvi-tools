@@ -2,7 +2,7 @@ MPOST:=$(shell which mpost)
 TEX:=$(shell which tex)
 DVIPS:=$(shell which dvips)
 
-SOURCES=Makefile circle.mp circle.tex create_tfm.sh pslides.tex tfm_files CVS
+SOURCES=Makefile circle.mp circle.tex create_tfm.sh pslides.tex tfm_files
 
 .PHONY: clean test
 
