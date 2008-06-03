@@ -879,57 +879,78 @@ int stack_level_off=0;
 #if 0
     fprintf(stderr,"len = %d, k=%d",len,k);
 #endif
-    if(matches(data,len,"panike off")){
-        level=scan_for_integer(data,len,0);
-        ++stack_level;
-        if(skipping==0 && level>counters[1]){
-            skipping=1;
-            stack_level_off=stack_level-1;
-        }
-    }@+else if(matches(data,len,"panike on")){
-        --stack_level;
-        if(skipping==1 && stack_level_off==stack_level) {
-            skipping=0;
-            stack_level_off = -1;
-        }
-    }@+else if(matches(data,len,"panike restore")) {
-        skipping = 0;
-        eliminate = 0;
-    }@+else if(matches(data,len,"panike eliminate")) {
-        eliminate_start = scan_for_integer(data,len,&end_start);
-        eliminate_end = scan_for_integer(end_start,
-                len - ((unsigned char*)end_start - data),0);
-        if(eliminate == 0 &&
-                counters[1] >= eliminate_start &&
-                counters[1] < eliminate_end) { 
-            eliminate = 1;
-            eliminate_stack = eliminate_stack_level;
-        }
-        ++eliminate_stack_level;
-    }@+else if(matches(data,len,"panike stop")) { 
-        --eliminate_stack_level;
-        if(eliminate > 0 && eliminate_stack == eliminate_stack_level)
-            eliminate = 0;
-    }@+else if(matches(data,len,"startreplacement")){
-        replacement_no = scan_for_integer(data,len,0); 
-    }@+else if(matches(data,len,"replaceme")){
-        replace_start=return_match(data,len,"replaceme"); 
-        replace_len = sprintf(replace_start,"%d",replacement_no);
-        ++replacement_no;
-        pp=replace_start+replace_len;
-        qq=replace_start+9;
-        ii=((char*)replace_start-(char*)data)+9;
-        while(ii<len){
-            *pp=*qq;
-            ++pp;
-            ++qq;
-            ++ii;
-        }
-        unsigned_int_to_buf(curr+1,len-(9-replace_len),&ii);  
-        write_dvi(curr,k-(9-replace_len),out_dvi); 
-    }@+else if(skipping==0 && eliminate==0)
+    @<Turn stuff off@>@;	
+    @<Turn stuff back on@>@;
+    @<Restore back to default operation@>@;
+    @<Eliminate text, selectively@>@;
+    @<Stop eliminating stuff@>@;
+    @<Set the replacement iterator by hand@>@;
+    @<Replace a epsf counter@>@;
+    else if(skipping==0 && eliminate==0)
         write_dvi(curr,k,out_dvi); 
     curr += k;
+}
+@ @<Turn stuff off@>=
+if(matches(data,len,"panike off")){
+    level=scan_for_integer(data,len,0);
+    ++stack_level;
+    if(skipping==0 && level>counters[1]){
+        skipping=1;
+        stack_level_off=stack_level-1;
+    }
+}
+@ @<Turn stuff back on@>=
+else if(matches(data,len,"panike on")){
+    --stack_level;
+    if(skipping==1 && stack_level_off==stack_level) {
+        skipping=0;
+        stack_level_off = -1;
+    }
+}
+@ @<Restore back to default operation@>=
+else if(matches(data,len,"panike restore")) {
+        skipping = 0;
+        eliminate = 0;
+}
+@ @<Eliminate text, selectively@>=
+else if(matches(data,len,"panike eliminate")) {
+    eliminate_start = scan_for_integer(data,len,&end_start);
+    eliminate_end = scan_for_integer(end_start,
+            len - ((unsigned char*)end_start - data),0);
+    if(eliminate == 0 &&
+            counters[1] >= eliminate_start &&
+            counters[1] < eliminate_end) { 
+        eliminate = 1;
+        eliminate_stack = eliminate_stack_level;
+    }
+    ++eliminate_stack_level;
+}
+@ @<Stop eliminating stuff@>=
+else if(matches(data,len,"panike stop")) { 
+    --eliminate_stack_level;
+    if(eliminate > 0 && eliminate_stack == eliminate_stack_level)
+        eliminate = 0;
+}
+@ @<Set the replacement iterator by hand@>=
+else if(matches(data,len,"startreplacement")){
+    replacement_no = scan_for_integer(data,len,0); 
+}
+@ @<Replace a epsf counter@>=
+else if(matches(data,len,"replaceme")){
+    replace_start=return_match(data,len,"replaceme"); 
+    replace_len = sprintf(replace_start,"%d",replacement_no);
+    ++replacement_no;
+    pp=replace_start+replace_len;
+    qq=replace_start+9;
+    ii=((char*)replace_start-(char*)data)+9;
+    while(ii<len){
+        *pp=*qq;
+        ++pp;
+        ++qq;
+        ++ii;
+    }
+    unsigned_int_to_buf(curr+1,len-(9-replace_len),&ii);  
+    write_dvi(curr,k-(9-replace_len),out_dvi); 
 }
 @ @<Parse the comm...@>=
 replacement_no=1;
