@@ -18,6 +18,7 @@ file and uses \.{\string\special} commands to create a slide show.
     unsigned char* tfm_buf;
     unsigned char* tfm_buf_end;
     unsigned char* p;
+    char*pp,*qq;
     dvi_code op;
     unsigned char temp_buf[4];
     unsigned char ch;
@@ -34,6 +35,8 @@ file and uses \.{\string\special} commands to create a slide show.
     int eliminate_start, eliminate_end;
     int eliminate_stack = -1, eliminate_stack_level = 0;
     const char* end_start;
+    int replacement_no,replace_len;
+    char* replace_start;
     @<Parse the command line@>@;
     @<Read in the \.{DVI} source file@>@;
     @<Read in the \.{TFM} database@>@;
@@ -907,13 +910,33 @@ int stack_level_off=0;
         --eliminate_stack_level;
         if(eliminate > 0 && eliminate_stack == eliminate_stack_level)
             eliminate = 0;
+    }@+else if(matches(data,len,"startreplacement")){
+        replacement_no = scan_for_integer(data,len,0); 
+    }@+else if(matches(data,len,"replaceme")){
+        replace_start=return_match(data,len,"replaceme"); 
+        replace_len = sprintf(replace_start,"%d",replacement_no);
+        ++replacement_no;
+        pp=replace_start+replace_len;
+        qq=replace_start+9;
+        ii=((char*)replace_start-(char*)data)+9;
+        while(ii<len){
+            *pp=*qq;
+            ++pp;
+            ++qq;
+            ++ii;
+        }
+        unsigned_int_to_buf(curr+1,len-(9-replace_len),&ii);  
+        write_dvi(curr,k-(9-replace_len),out_dvi); 
     }@+else if(skipping==0 && eliminate==0)
         write_dvi(curr,k,out_dvi); 
     curr += k;
 }
+@ @<Parse the comm...@>=
+replacement_no=1;
 @ @<Global func...@>=
 int matches(const char*,int,const char*);
 int scan_for_integer(const char*,int,const char**);
+char* return_match(const char*data,int len,const char*s);
 @ @c
 int scan_for_integer(const char*p,int n,const char**pc)
 {
@@ -946,6 +969,24 @@ int matches(const char*data,int len,const char*s)
             return 1;
     }
     return 0;
+}
+@ @c
+char* return_match(const char*data,int len,const char*s)
+{
+    int ii,jj,kk;
+    for(ii=0;ii<len;++ii){
+        kk = 0;
+        for(jj=ii;jj<len;++jj){
+            if(s[kk] == '\0')
+                return (char*)&data[ii]; 
+            else if(data[jj] != s[kk]) 
+                break;       
+            ++kk;
+        } 
+        if(jj==len && s[kk] == '\0')
+            return (char*)&data[ii];
+    }
+    return (char*)0;
 }
 @**Boilerplate code for files. I expect that some of this code will be
 specific to the operating system, since we are dealing directly with

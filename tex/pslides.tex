@@ -143,3 +143,52 @@
 \def\panstop{%
     \special{panike stop}%
 }
+%
+% Replacing text (for epsf)
+%
+\def\panstartreplacement#1{%
+\special{startreplacement #1}}
+\def\panreplace#1.#2\endreplace{#1.replaceme}
+\newif\ifreplacement
+\ifx \epsfrsize \epsfundefined
+	\relax
+\else \def \epsfspecial #1{%
+     \epsftmp=10\epsfxsize
+     \divide \epsftmp by \pspoints
+     \ifnum \epsfrsize = 0%
+       \relax %
+	\ifreplacement
+       \special{PSfile=\ifepsfdraft psdraft.ps\else\panreplace#1\endreplace\fi%
+	\space
+		llx=\epsfllx\space
+		lly=\epsflly\space
+		urx=\epsfurx\space
+		ury=\epsfury\space
+		rwi=\number\epsftmp
+		\epsfclipstring
+               }%
+	\else%
+       \special{PSfile=\ifepsfdraft psdraft.ps\else#1\fi\space
+		llx=\epsfllx\space
+		lly=\epsflly\space
+		urx=\epsfurx\space
+		ury=\epsfury\space
+		rwi=\number\epsftmp
+		\epsfclipstring
+               }%
+	\fi%
+     \else
+       \epsfrsize=10\epsfysize
+       \divide \epsfrsize by \pspoints
+       \special{PSfile=\ifepsfdraft psdraft.ps\else#1\fi\space
+		llx=\epsfllx\space
+		lly=\epsflly\space
+		urx=\epsfurx\space
+		ury=\epsfury\space
+		rwi=\number\epsftmp
+		rhi=\number\epsfrsize
+		\epsfclipstring
+               }%
+     \fi
+}%
+\fi
