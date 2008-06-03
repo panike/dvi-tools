@@ -936,7 +936,7 @@ else if(matches(data,len,"startreplacement")){
     replacement_no = scan_for_integer(data,len,0); 
 }
 @ @<Replace a epsf counter@>=
-else if(matches(data,len,"replaceme")){
+else if(eliminate == 0 && skipping == 0 && matches(data,len,"replaceme")){
     replace_start=return_match(data,len,"replaceme"); 
     replace_len = sprintf(replace_start,"%d",replacement_no);
     ++replacement_no;
