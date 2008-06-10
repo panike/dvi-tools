@@ -11,7 +11,7 @@ clean:
 
 test: circle.dvi
 	../dvitoslides -i ./circle.dvi -t ./tfm_files -o ./circle1.dvi
-	$(DVIPS) -t landscape circle1 -o
+	$(DVIPS) -q -t landscape circle1 -o
 
 circle.dvi: circle.1 circle.tex pslides.tex
 
