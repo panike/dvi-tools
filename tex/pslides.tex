@@ -56,6 +56,7 @@
 % 
 \newcount\currpanlevel \currpanlevel 0
 \newcount\maxpanlevel \maxpanlevel 0
+\count3=1
 % 
 % Formatting
 % 
@@ -91,6 +92,7 @@
         }
         \let\next\outputpages
         \global\advance\count1 1
+	\global\advance\count3 1
     \else
         \let\next\relax
     \fi
@@ -115,12 +117,12 @@
 % 
 \def\folio{%
     \rm
-    \charcount `\a
-    \advance\charcount\count1
-    \the\count0
-    \ifnum\count2>1
-        \char\charcount
-    \fi
+%    \charcount `\a
+%    \advance\charcount\count1
+    \the\count3
+%    \ifnum\count2>1
+%        \char\charcount
+%    \fi
 }
 % 
 % 
