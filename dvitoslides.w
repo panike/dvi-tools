@@ -7,36 +7,10 @@ file and uses \.{\string\special} commands to create a slide show.
 @<Global structure definitions@>@;
 @<Global variable declarations@>@;
 @<Global function declarations@>@;
-@**The main routine. This defines the |main| routine.
+@*2The main routine. This defines the |main| routine.
 @c int main(int argc,char* argv[])
 {
-    int ii;
-    unsigned char* dvi_buf;
-    int len;
-    unsigned char* curr;
-    unsigned char* end;
-    unsigned char* tfm_buf;
-    unsigned char* tfm_buf_end;
-    unsigned char* p;
-    char*pp,*qq;
-    dvi_code op;
-    unsigned char temp_buf[4];
-    unsigned char ch;
-    struct defined_font* current_font=0;
-    unsigned int temp;
-    unsigned char* data;
-    int k,a,l;
-    int width;
-    int temp_bop;
-    int level;
-    int just_dump_font_information=0;
-    struct defined_font* new_font;
-    struct defined_font* fnt_nxt;
-    int eliminate_start, eliminate_end;
-    int eliminate_stack = -1, eliminate_stack_level = 0;
-    const char* end_start;
-    int replacement_no,replace_len;
-    char* replace_start;
+    @<|main| local variables@>@;
     @<Parse the command line@>@;
     @<Read in the \.{DVI} source file@>@;
     @<Read in the \.{TFM} database@>@;
@@ -45,6 +19,38 @@ file and uses \.{\string\special} commands to create a slide show.
     @<Clean up after ourselves@>@;
     return 0;
 }
+@
+@s dvi_code int
+@<|main| local variables@>=
+int ii;
+unsigned char* dvi_buf;
+int len;
+unsigned char* curr;
+unsigned char* end;
+unsigned char* tfm_buf;
+unsigned char* tfm_buf_end;
+unsigned char* p;
+char*pp,*qq;
+dvi_code op;
+@ @<|main| local variables@>=
+unsigned char temp_buf[4];
+unsigned char ch;
+struct defined_font* current_font=0;
+unsigned int temp;
+unsigned char* data;
+int k,a,l;
+int width;
+int temp_bop;
+int level;
+int just_dump_font_information=0;
+@ @<|main| local variables@>=
+struct defined_font* new_font;
+struct defined_font* fnt_nxt;
+int eliminate_start, eliminate_end;
+int eliminate_stack = -1, eliminate_stack_level = 0;
+const char* end_start;
+int replacement_no,replace_len;
+char* replace_start;
 @ @<Global vari...@>=
 FILE* out_dvi;
 @ @<Open the output fi...@>=
